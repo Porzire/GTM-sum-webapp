@@ -1,0 +1,8 @@
+<IfModule mod_rewrite.c>
+    Options +FollowSymLinks
+    RewriteEngine On
+
+    # Rewrite /sum/ to /sum/app/.
+    RewriteBase /sum/
+    RewriteRule ^(?!app(/|))$  app/ [R=301,L]
+</IfModule>

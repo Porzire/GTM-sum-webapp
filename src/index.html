@@ -1,0 +1,149 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="keywords" content="similarity, job description, curriculum vitaes" />
+        <meta name="description" content="This demo application computes and ranks curriculum vitaes based on their similarities with job description." />
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <title>GTM Summerization</title>
+
+        <!-- build:css css/main.css -->
+        <link href="../components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+        <link href="../components/seiyria-bootstrap-slider/dist/css/bootstrap-slider.min.css" rel="stylesheet">
+        <link href="styles/main.css" rel="stylesheet">
+        <!-- endbuild -->
+    </head>
+
+    <body>
+        <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="#">Summerization App <small>ver.0.1</small></a>
+                </div>
+                <div class="collapse navbar-collapse">
+                    <ul class="nav navbar-nav">
+                    </ul>
+                    <ul class="nav navbar-nav navbar-right">
+                        <li><a href="#about">About</a></li>
+                        <li><a href="#" class="button" data-toggle="modal" data-target="#settings" data-backdrop="static"><span class="glyphicon glyphicon-cog"></span></a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <div id="wrapper" class="container">
+
+            <ul class="nav nav-pills">
+                <li class="active"><a data-toggle="tab" href="#original-text">Original Text</a></li>
+                <li class="disabled" id="summary-li"><a data-toggle="tab" href="#summary" id="summary-tab">Summary</a></li>
+            </ul>
+
+            <div class="tab-content">
+
+                <!-- Job description section -->
+                <div id="original-text" class="tab-pane fade in active">
+                    <div class="row">
+                        <!--
+                        <h2>Original Text</h2>
+                        -->
+                        <span class="help-block">
+                        </span>
+
+                        <div class="col-md-10" id="job-description-input">
+                            <textarea id="input-ta" class="form-control" rows="30" placeholder="Edit input text here."></textarea>
+                            <div id="tokens"></div>
+                        </div>
+                        <div class="col-md-2">
+                            <br>
+                            <div>
+                                <span class="file-input btn btn-block btn-primary btn-file">
+                                    File input <input id="input-fi" type="file" multiple>
+                                </span>
+                                <span class="help-block">
+                                    Select file in the local machine, the content will display on the left.
+                                </span>
+                            </div>
+                            <br>
+                            <div>
+                                <span class="help-block">
+                                    Summary length:
+                                </span>
+                                <div class="input-group">
+                                    <input id="sum-num-in" type="text" class="form-control" style="min-width:40px; height: 34px !important;">
+                                    <div class="input-group-btn">
+                                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" id="output-type-btn"><span id='output-type-label'>percentage</span> <span class="caret"></span></button>
+                                        <ul class="dropdown-menu dropdown-menu-right" role="menu">
+                                            <li><a class="output-type" href="#">percentage</a></li>
+                                            <li><a class="output-type" href="#">sentences</a></li>
+                                            <li><a class="output-type" href="#">words</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <input id="sum-slider" type="text" data-slider-id="sum-slider-data"
+                                       data-slider-min="1" data-slider-max="100" data-slider-step="1" data-slider-value="50"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Summary section -->
+                <div id="summary" class="tab-pane fade">
+                    <div class="row">
+                        <!--
+                        <h2>Summary</h2>
+                        -->
+                        <span class="help-block">
+                        </span>
+
+                        <div class="jumbotron">
+                            <p id="summary-p" class="leading">
+                            </p>
+                        </div>
+                        <div class="pull-right">
+                            <button id="download-btn" class="btn btn-primary" data-toggle="button" disabled="disabled">Download</button>
+                            <span class="help-block">
+                                Download result.
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+            </div><!-- .tab-content -->
+
+            <div id="about" class="row">
+            </div>
+
+        </div><!-- #wrapper -->
+
+        <div class="container footer">
+            <footer>
+                <div class="col-lg-12">
+                    <hr>
+                    <span class="help-block">
+                        GTM Group, Visual Text Analytics Lab, 2014
+                    </span>
+                </div>
+            </footer>
+        </div>
+
+        <!-- build:js js/vendor.js -->
+        <script src="../components/jquery/dist/jquery.min.js"></script>
+        <script src="../components/FileSaver/FileSaver.js"></script>
+        <script src="../components/bootstrap/dist/js/bootstrap.min.js"></script>
+        <script src="../components/seiyria-bootstrap-slider/dist/bootstrap-slider.min.js"></script>
+        <!-- endbuild -->
+        <!-- build:js js/main.js -->
+        <script src="scripts/main.js"></script>
+        <script src="scripts/treebankTokenizer.js"></script>
+        <script src="scripts/md5.js"></script>
+        <!-- endbuild -->
+    </body>
+</html>

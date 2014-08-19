@@ -1,0 +1,19 @@
+{
+    "name": "gtm-jobapp-demo",
+    "version": "1.0.0",
+    "author": [
+        "Jie Mei <mei.jie@hotmail.com>"
+    ],
+    "dependencies": {
+        "jquery": "latest",
+        "bootstrap": "latest",
+        "FileSaver": "latest",
+        "angular": "latest",
+        "seiyria-bootstrap-slider": "latest"
+    },
+    "ignore": [
+        "**/.*",
+        "node_modules",
+        "components"
+    ]
+}

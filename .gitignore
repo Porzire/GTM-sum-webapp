@@ -1,0 +1,8 @@
+/components
+/node_modules
+/app
+/log
+/.tmp
+
+**.swp
+.DS_Store
