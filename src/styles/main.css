@@ -1,5 +1,5 @@
 /* Aviod navigation section hidding by the header. */
-#wrapper>.nav {
+#wrapper {
     padding-top: 70px;
 }
 
@@ -46,3 +46,7 @@ input {
     height: 22px !important;
 }
 */
+/* Aviod textarea resize */
+textarea {
+    resize: none;
+}

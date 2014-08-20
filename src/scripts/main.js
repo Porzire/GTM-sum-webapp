@@ -2,57 +2,33 @@
 
 // Store the MD5 for the previous request.
 var pre_md5 = null;
-// True if the result is ready for download.
-var ready = false;
 
-/* Create result table DOM element.
- *
- * @param cvs   The curriculum vitaes' name and content array.
- * @param sims  The similarities array.
- *
- * @return The table DOM element.
+/**
+ * Count the number of tokens in the given string.
  */
-var createResult = function(cvs, sims) {
-    $tbody = $(document.createElement('tbody'));
-    $table = $(document.createElement('table')).addClass('table').append(
-                   $(document.createElement('thead')).append(
-                           $(document.createElement('tr')).append(
-                                   $(document.createElement('th')).html('Rank'),
-                                   $(document.createElement('th')).html('File Name'),
-                                   $(document.createElement('th')).html('Similarity'))), $tbody);
-    // Sort and store the ranking in the sims_rank.
-    var sims_rank = [];
-    for (var i = 0; i < sims.length; i++)
-        sims_rank[i] = [i, sims[i]];
-    for (var i = 0; i < sims_rank.length; i++) {
-        var max = i;
-        for (var j = i + 1; j < sims_rank.length; j++) {
-            if (sims_rank[j][1] > sims_rank[max][1]) {
-                max = j;
-            }
-        }
-        if (max !== i) {
-            var temp = sims_rank[i];
-            sims_rank[i] = sims_rank[max];
-            sims_rank[max] = temp;
-        }
-    }
-    // Append sorted information into table.
-    for (var i = 0; i < sims_rank.length; i++) {
-        $tbody.append($(document.createElement('tr')).append(
-                              $(document.createElement('td')).html(i + 1),
-                              $(document.createElement('td')).html(cvs[sims_rank[i][0]][0]),
-                              $(document.createElement('td')).html(sims_rank[i][1])));
-    }
-    return $table;
+var words = function(string){
+    return string.split(/\s+/gi).length;
 };
 
 /**
- * A event handler which disable the tag.
+ * Count the number of sentences in the given string.
  */
-var disableLink = function(evt){
-    evt.preventDefault();
-    return false;
+var sentences = function(string){
+    return string.split(/[.|!|?]\s/gi).length;
+};
+
+/**
+ * Get current unit type.
+ */
+var type = function(){
+    var label = $('#output-type-label').html();
+    return (label === 'percentage' ? label : label.substring(0, label.length - 1));
+};
+
+var resetSilder = function(val, min, max){
+    $('#sum-slider').slider('setAttribute', 'min', min);
+    $('#sum-slider').slider('setAttribute', 'max', max);
+    $('#sum-slider').slider('setValue', val);
 };
 
 /**
@@ -69,8 +45,10 @@ var compute = function(){
     };
     var md5 = MD5(JSON.stringify(request));
     if (md5 !== pre_md5) {
-        $('#summary-p').html('waiting for response..');
-        ready = false;
+        $('#summarize-btn').html('Summarizing...');
+        // $('#summary-ta').val(JSON.stringify(request));
+        // $('#summary-ta').val(tokens($('#input-ta').val()) + '\n'
+        //         + sentences($('#input-ta').val()));
         // Ajax call for summarization.
         $.ajax({
             type: 'POST',
@@ -82,8 +60,8 @@ var compute = function(){
             url: 'http://jiemei.cs.dal.ca:8080/gtm-api/services/sum',
             data: JSON.stringify(request),
             success: function(response) {
-                $('#summary-p').html(response['summaries'][0]);
-                ready = true;
+                $('#summary-ta').val(response['summaries'][0]);
+                $('#summarize-btn').html('Summarize');
             }
         });
     }
@@ -98,49 +76,72 @@ $(function(){
     // Initialize silder.
     $('#sum-slider').slider({ tooltip: 'hide' });
     $('#sum-num-in').val($('#sum-slider').slider('getValue'));
-    // Disable the summary tab.
-    $('#summary-tab').bind('click', disableLink);
+    $('#sum-slider-data').hide();
 
     /**
-     * Interval check.
+     * Interval check and update.
      */
     setInterval(function(){
-        if ($('#input-ta').val().length === 0) {
-            if (!$('#summary-li').hasClass('disabled')) {
-                $('#summary-li').addClass('disabled');
-                $('#summary-tab').bind('click', disableLink);
-            }
-        } else {
-            if ($('#summary-li').hasClass('disabled')) {
-                $('#summary-li').removeClass('disabled');
-                $('#summary-tab').unbind('click', disableLink);
-            }
-        }
-        if (ready)
-            $('#download-btn').removeAttr('disabled');
-        else
-            $('#download-btn').attr('disabled', 'disabled');
     }, 200);
 
     /**
      * Summary length options setting.
      */
-    // Change output unit on select.
-    $('.output-type').click(function(){
-        var type = $(this).html();
-        $('#output-type-label').html(type);
-        if (type === 'percentage')
-            $('#sum-slider-data').show(500);
-        else
-            $('#sum-slider-data').hide(500);
-    });
     // Update percentage on slider position change.
-    $('#sum-slider').on('slide', function(slideEvt) {
+    $('#sum-slider').on('slide', function(slideEvt){
         $('#sum-num-in').val(slideEvt.value);
     });
     // Update slider position on value change.
     $('#sum-num-in').change(function() {
         $('#sum-slider').slider('setValue', Number($(this).val()));
+    });
+    // Enable slider for PC browsers.
+    if(!/Android|webOS|iPhone|iPad|iPod|BlackBerry/i.test(navigator.userAgent)) {
+        $('#sum-num-in').on('focus', function(){
+            $('#sum-slider-data').fadeIn(500);
+        });
+        $('textarea, button[id!="output-type-btn"], input[type=file]').on('focus', function() {
+            $('#sum-slider-data').delay(200).fadeOut(500);
+        });
+    }
+    // Change the output type.
+    $('.output-type').click(function(){
+        var label = $(this).html();
+        var curr_type = (label === 'percentage'
+                ? label : label.substring(0, label.length - 1));
+        var pre_type = type();
+        if (curr_type !== pre_type) {
+            $('#output-type-label').html(curr_type);
+            var val = $('#sum-slider').slider('getValue');
+            var input = $('#input-ta').val().trim();
+            var change = pre_type.charAt(0).concat('->', curr_type.charAt(0));
+            alert(val + ' ' + input + ' ' + change);
+            switch (change) {
+                case 'p->s':
+                    val = parseInt(val / 100 * sentences(input)); break;
+                case 'p->w':
+                    val = parseInt(val / 100 * words(input)); break;
+                case 's->p':
+                    val = parseInt(val / sentences(input) * 100); break;
+                case 's->w':
+                    val = parseInt(val / sentences(input) * words(input)); break;
+                case 'w->p':
+                    val = parseInt(val / words(input) * 100); break;
+                case 'w->s':
+                    val = parseInt(val / words(input) * sentences(input)); break;
+            }
+            switch (curr_type) {
+                case 'percentage':
+                    resetSilder(val, 1, 100); break;
+                case 'sentence':
+                    var max = sentences(input);
+                    resetSilder(val, (max === 0 ? 0 : 1), max); break;
+                case 'word':
+                    var max = words(input);
+                    resetSilder(val, (max === 0 ? 0 : 1), max); break;
+            }
+            $('#sum-num-in').val((val === 0 ? 1 : val));
+        }
     });
 
     /**
@@ -161,7 +162,7 @@ $(function(){
     /**
      * Compute once summary is requested.
      */
-    $('#summary-tab').click(compute);
+    $('#summarize-btn').click(compute);
 
     /**
      * Download summary.
