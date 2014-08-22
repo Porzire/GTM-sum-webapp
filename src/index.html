@@ -12,6 +12,7 @@
         <!-- build:css css/main.css -->
         <link href="../components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
         <link href="../components/seiyria-bootstrap-slider/dist/css/bootstrap-slider.min.css" rel="stylesheet">
+        <link href="../components/jquery-highlighttextarea/jquery.highlighttextarea.min.css" rel="stylesheet">
         <link href="styles/main.css" rel="stylesheet">
         <!-- endbuild -->
     </head>
@@ -32,8 +33,8 @@
                     <ul class="nav navbar-nav">
                     </ul>
                     <ul class="nav navbar-nav navbar-right">
-                        <li><a href="#about">About</a></li>
-                        <li><a href="#" class="button" data-toggle="modal" data-target="#settings" data-backdrop="static"><span class="glyphicon glyphicon-cog"></span></a></li>
+                        <li><a href="#" class="button" data-toggle="modal" data-target="#about">About</a></li>
+                        <li><a href="#" class="button" data-toggle="modal" data-target="#settings" data-keyboard="false" data-backdrop="static"><span class="glyphicon glyphicon-cog"></span></a></li>
                     </ul>
                 </div>
             </div>
@@ -42,35 +43,60 @@
         <div id="wrapper" class="container">
 
             <div class="row">
+
+                <!-- Original Text -->
                 <div id="original-text" class="col-md-6">
-                    <h3 class="text-muted">Original Text</h3>
+                    <h3 class="text-muted" style="height:28px;">
+                        <span style="padding-right:5px">
+                            Original Text
+                        </span>
+                        <span id="input-sp" class="file-input btn btn-default btn-xs btn-file"><span class="glyphicon glyphicon-folder-open"></span>
+                            <input id="input-fi" type="file" multiple>
+                        </span>
+                    </h3>
                     <span class="help-block"></span>
                     <textarea id="input-ta" class="form-control" rows="30" placeholder="Edit input text here."></textarea>
                 </div>
-                <div class="col-md-6">
-                    <h3 class="text-muted" style="text-align:right;">Summary</h3>
+
+                <!-- Result Text -->
+                <div class="col-md-6" style="min-height:682px;">
+                    <h3 class="text-muted" style="text-align:right;">
+                        <button id="download-btn" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-download-alt"></span></button>
+                        <span class="btn-group" style="padding-left:5px">
+                            <span type="button" class="dropdown-toggle" data-toggle="dropdown">
+                                <span  id="result-tablab">Summary</span> <span class="caret"></span>
+                            </span>
+                            <ul class="dropdown-menu pull-right" id="result-tablist">
+                                <li class="dropdown-submenu pull-left"><a href="#">ordering</a>
+                                    <ul class="dropdown-menu">
+                                        <li><a href="#">original order</a></li>
+                                        <li><a href="#">ranking order</a></li>
+                                    </ul>
+                                </li>
+                                <li class="dropdown-submenu pull-left"><a href="#">display</a>
+                                    <ul class="dropdown-menu">
+                                        <li><a href="#">key words highlight</a></li>
+                                        <li><a href="#">key words highlight</a></li>
+                                        <li class="divider"></li>
+                                        <li><a href="#">sentences</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </span>
+                    </h3>
                     <span class="help-block"></span>
-                    <textarea id="summary-ta" class="form-control" rows="30" placeholder="Summary display here."></textarea>
-                    </p>
+                    <div id="summary-div" class="result"></div>
                 </div>
             </div>
 
             <div class="row" style="height:60px;">
                 <div class="col-md-2">
-                    <span id="input-sp" class="file-input btn btn-default btn-block btn-file">File input
-                        <input id="input-fi" type="file" multiple>
-                    </span>
-                    <span class="help-block">
-                        <!--Select file in the local machine, the content will display on the left.-->
-                    </span>
+                    <span class="help-block"></span>
                 </div>
-                <div class="col-md-2">
+                <div class="col-md-3">
                 </div>
-                <div id="control" class="col-md-4">
+                <div id="control" class="col-md-2">
                     <div class="input-group">
-                        <div class="input-group-btn">
-                            <button type="button" class="btn btn-default"><span class="glyphicon glyphicon-cog"></span></button>
-                        </div>
                         <input id="sum-num-in" type="text" class="form-control" style="min-width:45px; height: 34px !important;">
                         <div class="input-group-btn">
                             <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" id="output-type-btn"><span id='output-type-label'>percentage</span> <span class="caret"></span></button>
@@ -83,7 +109,7 @@
                     </div>
                     <input id="sum-slider" type="text" data-slider-id="sum-slider-data" data-slider-min="1" data-slider-max="100" data-slider-step="1" data-slider-value="50"/>
                 </div>
-                <div class="col-md-2">
+                <div class="col-md-3">
                 </div>
                 <div class="col-md-2">
                     <button id="summarize-btn" class="btn btn-default btn-block btn-primary">Summarize</button>
@@ -92,22 +118,81 @@
 
         </div><!-- #wrapper -->
 
-        <div class="container footer">
+        <div class="footer">
             <footer>
-                <div class="col-lg-12">
-                    <hr>
-                    <span class="help-block">
-                        GTM Group, Visual Text Analytics Lab, 2014
-                    </span>
+                <div class="container">
+                    <div class="col-lg-12">
+                        <hr>
+                        <span class="pull-right help-block">
+                            Visual Text Analytics Lab, Dalhousie University, 2014
+                        </span>
+                    </div>
                 </div>
             </footer>
         </div>
 
+        <!-- The setting menu. -->
+        <div id="settings" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="settings-title" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close setting-close-btn" data-dismiss="modal" aria-hidden="true"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                        <h4 class="modal-title" id="settings-title">Settings</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <h4 class="panel-title">Stopwords
+                                    <span id="input-sp" class="pull-right file-input btn btn-default btn-xs btn-file"><span class="glyphicon glyphicon-folder-open"></span>
+                                        <input id="input-fi" type="file" multiple>
+                                    </span>
+                                </h4>
+                            </div>
+                            <div class="panel-body">
+                                <textarea id="stopword-ta" class="form-control" rows="10" placeholder="Edit stop words here."></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button id="setting-close-btn" type="button" class="btn btn-default setting-close-btn" data-dismiss="modal">Cancel</button>
+                        <button id="setting-ok-btn" type="button" class="btn btn-primary" data-dismiss="modal">OK</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- The about menu. -->
+        <div id="about" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="settings-title" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                        <h4 class="modal-title" id="settings-title">About</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <h4 class="panel-title">People</h4>
+                            </div>
+                            <div class="panel-body">
+                                <p><a href="http://web.cs.dal.ca/~islam/" target="_blank">Aminul Islam</a></p>
+                                <p>Jie Mei</p>
+                                <p><a href="http://web.cs.dal.ca/~amohd/" target="_blank">Abidalrahman Moh'd</a></p>
+                                <p><a href="http://web.cs.dal.ca/~eem/" target="_blank">Evangelos Milios</a></p>
+                                <p><a href="http://web.cs.dal.ca/~vlado/" target="_blank">Vlado Keselj</a></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- build:js js/vendor.js -->
         <script src="../components/jquery/dist/jquery.min.js"></script>
-        <script src="../components/FileSaver/FileSaver.js"></script>
         <script src="../components/bootstrap/dist/js/bootstrap.min.js"></script>
         <script src="../components/seiyria-bootstrap-slider/dist/bootstrap-slider.min.js"></script>
+        <script src="../components/jquery-highlighttextarea/jquery.highlighttextarea.min.js"></script>
+        <script src="../components/FileSaver/FileSaver.js"></script>
         <!-- endbuild -->
         <!-- build:js js/main.js -->
         <script src="scripts/main.js"></script>

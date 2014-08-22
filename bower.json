@@ -9,6 +9,7 @@
         "bootstrap": "latest",
         "FileSaver": "latest",
         "angular": "latest",
+        "jquery-highlighttextarea": "latest",
         "seiyria-bootstrap-slider": "latest"
     },
     "ignore": [

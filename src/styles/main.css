@@ -26,27 +26,316 @@ input[readonly] {
     background-color: white !important;
     cursor: text !important;
 }
-/* Token styles. */
-token[importance=fatal]      { color: #FF0000; font-weight: bold; }
-token[importance=important]  { color: #FF0000; }
-token[importance=negligible] { opacity: 0.7; }
-token[importance=useless]    { opacity: 0.4; font-weight: lighter; }
-token[affect=positive]       { }
-token[affect=negative]       { text-decoration: line-through; }
-token:hover                  { background-color: #CCCCCC; }
 
 #sum-slider-data .slider-selection {
 	background: #BABABA;
 }
 #sum-slider-data {
-    width: 100%
+    width: 100%;
 }
-/*
-input {
-    height: 22px !important;
-}
-*/
-/* Aviod textarea resize */
-textarea {
+/* Simulate bootstrap textarea */
+.result {
+    -webkit-animation-delay: 0s;
+    -webkit-animation-direction: normal;
+    -webkit-animation-duration: 0s;
+    -webkit-animation-fill-mode: none;
+    -webkit-animation-iteration-count: 1;
+    -webkit-animation-name: none;
+    -webkit-animation-play-state: running;
+    -webkit-animation-timing-function: ease;
+    -webkit-app-region: no-drag;
+    -webkit-appearance: none;
+    -webkit-backface-visibility: visible;
+    -webkit-background-clip: border-box;
+    -webkit-background-composite: source-over;
+    -webkit-background-origin: padding-box;
+    -webkit-background-size: auto;
+    -webkit-border-fit: border;
+    -webkit-border-horizontal-spacing: 0px;
+    -webkit-border-image: none;
+    -webkit-border-vertical-spacing: 0px;
+    -webkit-box-align: stretch;
+    -webkit-box-decoration-break: slice;
+    -webkit-box-direction: normal;
+    -webkit-box-flex: 0;
+    -webkit-box-flex-group: 1;
+    -webkit-box-lines: single;
+    -webkit-box-ordinal-group: 1;
+    -webkit-box-orient: horizontal;
+    -webkit-box-pack: start;
+    -webkit-box-reflect: none;
+    -webkit-box-shadow: rgba(0, 0, 0, 0.0745098) 0px 1px 1px 0px inset;
+    -webkit-clip-path: none;
+    -webkit-column-break-after: auto;
+    -webkit-column-break-before: auto;
+    -webkit-column-break-inside: auto;
+    -webkit-column-count: auto;
+    -webkit-column-gap: normal;
+    -webkit-column-rule-color: rgb(85, 85, 85);
+    -webkit-column-rule-style: none;
+    -webkit-column-rule-width: 0px;
+    -webkit-column-span: none;
+    -webkit-column-width: auto;
+    -webkit-filter: none;
+    -webkit-font-smoothing: auto;
+    -webkit-highlight: none;
+    -webkit-hyphenate-character: auto;
+    -webkit-line-box-contain: block inline replaced;
+    -webkit-line-break: auto;
+    -webkit-line-clamp: none;
+    -webkit-locale: auto;
+    -webkit-margin-after-collapse: collapse;
+    -webkit-margin-before-collapse: collapse;
+    -webkit-mask-box-image: none;
+    -webkit-mask-box-image-outset: 0px;
+    -webkit-mask-box-image-repeat: stretch;
+    -webkit-mask-box-image-slice: 0 fill;
+    -webkit-mask-box-image-source: none;
+    -webkit-mask-box-image-width: auto;
+    -webkit-mask-clip: border-box;
+    -webkit-mask-composite: source-over;
+    -webkit-mask-image: none;
+    -webkit-mask-origin: border-box;
+    -webkit-mask-position: 0% 0%;
+    -webkit-mask-repeat: repeat;
+    -webkit-mask-size: auto;
+    -webkit-perspective: none;
+    -webkit-perspective-origin: 277.5px 307px;
+    -webkit-print-color-adjust: economy;
+    -webkit-rtl-ordering: logical;
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+    -webkit-text-combine: none;
+    -webkit-text-decorations-in-effect: none;
+    -webkit-text-emphasis-color: rgb(85, 85, 85);
+    -webkit-text-emphasis-position: over;
+    -webkit-text-emphasis-style: none;
+    -webkit-text-fill-color: rgb(85, 85, 85);
+    -webkit-text-orientation: vertical-right;
+    -webkit-text-security: none;
+    -webkit-text-stroke-color: rgb(85, 85, 85);
+    -webkit-text-stroke-width: 0px;
+    -webkit-transform: none;
+    -webkit-transform-origin: 277.5px 307px;
+    -webkit-transform-style: flat;
+    -webkit-transition-delay: 0s, 0s;
+    -webkit-transition-duration: 0.15s, 0.15s;
+    -webkit-transition-property: border-color, box-shadow;
+    -webkit-transition-timing-function: ease-in-out, ease-in-out;
+    -webkit-user-drag: auto;
+    -webkit-user-modify: read-only;
+    -webkit-user-select: text;
+    -webkit-writing-mode: horizontal-tb;
+    align-content: stretch;
+    align-items: stretch;
+    align-self: stretch;
+    alignment-baseline: auto;
+    backface-visibility: visible;
+    background-attachment: scroll;
+    background-blend-mode: normal;
+    background-clip: border-box;
+    background-color: rgba(0, 0, 0, 0);
+    background-image: none;
+    background-origin: padding-box;
+    background-position: 0% 0%;
+    background-repeat: repeat;
+    background-size: auto;
+    baseline-shift: baseline;
+    border-bottom-color: rgb(204, 204, 204);
+    border-bottom-left-radius: 4px;
+    border-bottom-right-radius: 4px;
+    border-bottom-style: solid;
+    border-bottom-width: 1px;
+    border-collapse: separate;
+    border-image-outset: 0px;
+    border-image-repeat: stretch;
+    border-image-slice: 100%;
+    border-image-source: none;
+    border-image-width: 1;
+    border-left-color: rgb(204, 204, 204);
+    border-left-style: solid;
+    border-left-width: 1px;
+    border-right-color: rgb(204, 204, 204);
+    border-right-style: solid;
+    border-right-width: 1px;
+    border-top-color: rgb(204, 204, 204);
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+    border-top-style: solid;
+    border-top-width: 1px;
+    bottom: auto;
+    box-shadow: rgba(0, 0, 0, 0.0745098) 0px 1px 1px 0px inset;
+    box-sizing: border-box;
+    buffered-rendering: auto;
+    caption-side: top;
+    clear: none;
+    clip: auto;
+    clip-path: none;
+    clip-rule: nonzero;
+    color-interpolation: srgb;
+    color-interpolation-filters: linearrgb;
+    color-rendering: auto;
+    cursor: auto;
+    direction: ltr;
+    display: block;
+    dominant-baseline: auto;
+    empty-cells: show;
+    fill: rgb(0, 0, 0);
+    fill-opacity: 1;
+    fill-rule: nonzero;
+    filter: none;
+    flex-basis: auto;
+    flex-direction: column;
+    flex-grow: 0;
+    flex-shrink: 1;
+    flex-wrap: nowrap;
+    float: none;
+    flood-color: rgb(0, 0, 0);
+    flood-opacity: 1;
+    font-kerning: auto;
+    font-style: normal;
+    font-variant: normal;
+    font-variant-ligatures: normal;
+    font-weight: normal;
+    glyph-orientation-horizontal: 0deg;
+    glyph-orientation-vertical: auto;
+    height: 614px;
+    image-rendering: auto;
+    justify-content: flex-start;
+    left: auto;
+    letter-spacing: normal;
+    lighting-color: rgb(255, 255, 255);
+    line-height: 20px;
+    list-style-image: none;
+    list-style-position: outside;
+    list-style-type: disc;
+    margin-bottom: 0px;
+    margin-left: 0px;
+    margin-right: 0px;
+    margin-top: 0px;
+    marker-end: none;
+    marker-mid: none;
+    marker-start: none;
+    mask: none;
+    mask-type: luminance;
+    max-height: none;
+    max-width: none;
+    min-height: 0px;
+    min-width: 0px;
+    object-fit: fill;
+    object-position: 50% 50%;
+    opacity: 1;
+    order: 0;
+    orphans: auto;
+    outline-color: rgb(85, 85, 85);
+    outline-offset: 0px;
+    outline-style: none;
+    outline-width: 0px;
+    overflow-wrap: break-word;
+    overflow-x: auto;
+    overflow-y: auto;
+    padding-bottom: 6px;
+    padding-left: 12px;
+    padding-right: 12px;
+    padding-top: 6px;
+    page-break-after: auto;
+    page-break-before: auto;
+    page-break-inside: auto;
+    paint-order: fill stroke markers;
+    perspective: none;
+    perspective-origin: 277.5px 307px;
+    pointer-events: auto;
+    position: static;
     resize: none;
+    right: auto;
+    shape-rendering: auto;
+    speak: normal;
+    stop-color: rgb(0, 0, 0);
+    stop-opacity: 1;
+    stroke: none;
+    stroke-dasharray: none;
+    stroke-dashoffset: 0;
+    stroke-linecap: butt;
+    stroke-linejoin: miter;
+    stroke-miterlimit: 4;
+    stroke-opacity: 1;
+    stroke-width: 1;
+    tab-size: 8;
+    table-layout: auto;
+    text-align: start;
+    text-anchor: start;
+    text-decoration: none solid rgb(85, 85, 85);
+    text-indent: 0px;
+    text-overflow: clip;
+    text-rendering: auto;
+    text-shadow: none;
+    text-transform: none;
+    top: auto;
+    touch-action: auto;
+    transform: none;
+    transform-origin: 277.5px 307px;
+    transform-style: flat;
+    transition-delay: 0s, 0s;
+    transition-duration: 0.15s, 0.15s;
+    transition-property: border-color, box-shadow;
+    transition-timing-function: ease-in-out, ease-in-out;
+    unicode-bidi: normal;
+    vector-effect: none;
+    vertical-align: baseline;
+    visibility: visible;
+    white-space: pre-wrap;
+    widows: auto;
+    will-change: auto;
+    word-break: normal;
+    word-spacing: 0px;
+    word-wrap: break-word;
+    writing-mode: lr-tb;
+    z-index: auto;
+    zoom: 1;
+}
+/* Enable dropdown submenu. */
+.dropdown-submenu {
+    position:relative;
+}
+.dropdown-submenu>.dropdown-menu {
+    top:0;
+    left:100%;
+    margin-top:-6px;
+    margin-left:-1px;
+    -webkit-border-radius:0 6px 6px 6px;
+    -moz-border-radius:0 6px 6px 6px;
+    border-radius:0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+    display:block;
+}
+.dropdown-submenu>a:after {
+    display:block;
+    content:" ";
+    float:right;
+    width:0;
+    height:0;
+    border-color:transparent;
+    border-style:solid;
+    border-width:5px 0 5px 5px;
+    border-left-color:#cccccc;
+    margin-top:5px;
+    margin-left:-15px;
+}
+.dropdown-submenu:hover>a:after {
+    border-left-color:#ffffff;
+}
+.dropdown-submenu.pull-left {
+    float:none!important;
+}
+.dropdown-submenu.pull-left>a:after {
+    float:left;
+    border-width:5px 5px 5px 0;
+    border-right-color:#cccccc;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+    left:-100%;
+    margin-left:0px;
+    -webkit-border-radius:6px 0 6px 6px;
+    -moz-border-radius:6px 0 6px 6px;
+    border-radius:6px 0 6px 6px;
 }
