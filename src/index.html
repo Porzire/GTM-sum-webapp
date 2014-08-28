@@ -42,56 +42,44 @@
 
         <div id="wrapper" class="container">
 
-            <div class="row">
+            <div class="row" style="min-height:670px;">
 
                 <!-- Original Text -->
                 <div id="original-text" class="col-md-6">
-                    <h3 class="text-muted" style="height:28px;">
-                        <span style="padding-right:5px">
-                            Original Text
-                        </span>
-                        <span id="input-sp" class="file-input btn btn-default btn-xs btn-file"><span class="glyphicon glyphicon-folder-open"></span>
-                            <input id="input-fi" type="file" multiple>
-                        </span>
-                    </h3>
-                    <span class="help-block"></span>
+                    <div style="height:46px;">
+                        <h3 class="text-muted">
+                            <span style="padding-right:5px">
+                                Original Text
+                            </span>
+                            <span id="input-sp" class="file-input btn btn-default btn-xs btn-file"><span class="glyphicon glyphicon-folder-open"></span>
+                                <input id="input-fi" type="file" multiple>
+                            </span>
+                        </h3>
+                        <span class="help-block"></span>
+                    </div>
                     <textarea id="input-ta" class="form-control" rows="30" placeholder="Edit input text here."></textarea>
                 </div>
 
                 <!-- Result Text -->
-                <div class="col-md-6" style="min-height:682px;">
-                    <h3 class="text-muted" style="text-align:right;">
-                        <button id="download-btn" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-download-alt"></span></button>
-                        <span class="btn-group" style="padding-left:5px">
-                            <span type="button" class="dropdown-toggle" data-toggle="dropdown">
-                                <span  id="result-tablab">Summary</span> <span class="caret"></span>
+                <div class="col-md-6">
+                    <div style="text-align:right;">
+                        <h3 class="text-muted">
+                            <button id="download-btn" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-download-alt"></span></button>
+                            <span style="padding-left:5px">
+                                Summary
                             </span>
-                            <ul class="dropdown-menu pull-right" id="result-tablist">
-                                <li class="dropdown-submenu pull-left"><a href="#">ordering</a>
-                                    <ul class="dropdown-menu">
-                                        <li><a href="#">original order</a></li>
-                                        <li><a href="#">ranking order</a></li>
-                                    </ul>
-                                </li>
-                                <li class="dropdown-submenu pull-left"><a href="#">display</a>
-                                    <ul class="dropdown-menu">
-                                        <li><a href="#">key words highlight</a></li>
-                                        <li><a href="#">key words highlight</a></li>
-                                        <li class="divider"></li>
-                                        <li><a href="#">sentences</a></li>
-                                    </ul>
-                                </li>
-                            </ul>
-                        </span>
-                    </h3>
-                    <span class="help-block"></span>
-                    <div id="summary-div" class="result"></div>
+                        </h3>
+                        <span class="help-block" style="line-height: 10%;">helo</span>
+                        <div style="position:relative;">
+                            <div id="summary-div" class="result"></div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
             <div class="row" style="height:60px;">
                 <div class="col-md-2">
-                    <span class="help-block"></span>
+                    <button id="summarize-btn" class="btn btn-default btn-block btn-primary">Summarize</button>
                 </div>
                 <div class="col-md-3">
                 </div>
@@ -101,7 +89,7 @@
                         <div class="input-group-btn">
                             <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" id="output-type-btn"><span id='output-type-label'>percentage</span> <span class="caret"></span></button>
                             <ul class="dropdown-menu dropdown-menu-right" role="menu">
-                                <li><a class="output-type" href="#">percentage</a></li>
+                                <li class="active"><a class="output-type" href="#">percentage</a></li>
                                 <li><a class="output-type" href="#">sentences</a></li>
                                 <li><a class="output-type" href="#">words</a></li>
                             </ul>
@@ -110,9 +98,53 @@
                     <input id="sum-slider" type="text" data-slider-id="sum-slider-data" data-slider-min="1" data-slider-max="100" data-slider-step="1" data-slider-value="50"/>
                 </div>
                 <div class="col-md-3">
+                    <div class="tab-content" id="opt-tab">
+                        <div class="tab-pane fade in active" id="no-opts"></div>
+                        <div class="tab-pane fade" id="sentence-opts">
+                            <div class="row">
+                                <div class="col-md-6">
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="checkbox">
+                                        <label><input type="checkbox" value="" id="sentence-rank-cb">rank</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="checkbox">
+                                        <label><input type="checkbox" value="" id="sentence-score-cb">score</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="word-opts">
+                            <div class="row">
+                                <div class="col-md-6">
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="checkbox">
+                                        <label><input type="checkbox" value="" id="word-rank-cb" />rank</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="checkbox">
+                                        <label><input type="checkbox" value="" id="word-score-cb" />score</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <div class="col-md-2">
-                    <button id="summarize-btn" class="btn btn-default btn-block btn-primary">Summarize</button>
+                    <div class="dropdown">
+                        <button type="button" class="btn btn-default btn-block dropdown-toggle" data-toggle="dropdown" id="statistic-type-btn"><span id='statistic-type-label'>Display</span> <span class="caret"></span></button>
+                        <ul class="dropdown-menu dropdown-menu-right" role="tablist" id="statistic-opt-list">
+                            <li><a class="statistic-type" role="tab" href="#sentence-opts" data-toggle="tab">sentence</a></li>
+                            <li><a class="statistic-type" role="tab" href="#word-opts" data-toggle="tab">top word</a></li>
+                            <li role="presentation" class="divider"></li>
+                            <li class="active"><a class="statistic-type" role="tab" href="#no-opts" data-toggle="tab">hide statistic</a></li>
+                        </ul>
+                    </div>
+                    <input id="statistic-slider" type="text" data-slider-id="statistic-slider-data" data-slider-min="1" data-slider-max="20" data-slider-step="1" data-slider-value="10"/>
                 </div>
             </div>
 

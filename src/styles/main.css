@@ -33,8 +33,13 @@ input[readonly] {
 #sum-slider-data {
     width: 100%;
 }
+#statistic-slider-data {
+    width: 100%;
+}
 /* Simulate bootstrap textarea */
 .result {
+    height: 586px;
+
     -webkit-animation-delay: 0s;
     -webkit-animation-direction: normal;
     -webkit-animation-duration: 0s;
@@ -198,7 +203,6 @@ input[readonly] {
     font-weight: normal;
     glyph-orientation-horizontal: 0deg;
     glyph-orientation-vertical: auto;
-    height: 614px;
     image-rendering: auto;
     justify-content: flex-start;
     left: auto;
@@ -292,6 +296,14 @@ input[readonly] {
     z-index: auto;
     zoom: 1;
 }
+/* Commented. */
+.sentence-mark {
+    font-weight: bold;
+}
+.word-mark {
+    text-decoration: underline;
+}
+
 /* Enable dropdown submenu. */
 .dropdown-submenu {
     position:relative;

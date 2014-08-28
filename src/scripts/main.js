@@ -1,7 +1,5 @@
 "use strict";
 
-// Store the MD5 for the previous request.
-var pre_md5 = null;
 var HIDE_SLIDER = false;
 var DEFAULT_CONTENT = //'';
         'BERLIN – SoundCloud said Thursday that it will start paying artists and record companies whose music is played on the popular streaming site, a move that will bring it in line with competitors such as YouTube and Spotify.\n' +
@@ -93,6 +91,13 @@ var stopwords = {};
 for (var i in DEFAULT_STOPWORDS)
     stopwords[DEFAULT_STOPWORDS[i]] = true;
 
+// Store the MD5 for the previous request.
+var pre_md5 = null;
+
+// Ready to compute new summary.
+var ready = false;
+
+
 /**
  * Count the number of tokens in the given string.
  */
@@ -116,10 +121,10 @@ var type = function(){
 };
 
 /**
- * Reset the silder according to the current input text.
+ * Reset the slider according to the current input text.
  */
-var resetSilder = function(){
-    // Update the silder settings.
+var resetslider = function(){
+    // Update the slider settings.
     var update = function(val, min, max){
         $('#sum-slider').slider('setAttribute', 'min', min);
         $('#sum-slider').slider('setAttribute', 'max', max);
@@ -153,7 +158,97 @@ var highlight = function($textarea, sentences) {
         words: sentences,
         color: '#E6E6E6'
     });
-}
+};
+
+// Last request.
+var pre_response = null;
+/**
+ * Update the statistic display.
+ */
+var updateDisplay = function() {
+    if (pre_response === null)
+        return;
+    var opt = $('#statistic-type-label').html(),
+        sentences = [];
+    console.log('opt: ' + opt);
+    // Copy the sentences for using by string.replace.
+    for (var i in pre_response['sentences'])
+        sentences.push(pre_response['sentences'][i].slice());
+    if (opt !== 'Display') {
+        // Format the number.
+        var format = function(num){
+            return num.toString().substring(0, 5);
+        };
+
+        // For word statistic display.
+        var words = pre_response['words'],
+            scores = pre_response['wordScores'],
+            rank = $('#word-rank-cb').is(':checked'),
+            score = $('#word-score-cb').is(':checked');
+            stats = [];
+        if (rank && score) {
+            for (var i in words)
+                stats.push('(' + (Number(i)+1) + ', ' + format(scores[i]) + ')');
+        } else if (rank) {
+            for (var i in words)
+                stats.push('(' + (Number(i)+1) + ')');
+        } else if (score) {
+            for (var i in words)
+                stats.push('(' + format(scores[i]) + ')');
+        }
+        if (stats.length > 0)
+            for (var i in words)
+                for (var j in sentences)
+                    sentences[j]  = sentences[j].replace(new RegExp(words[i], 'g'),
+                            '<span class="word-mark">' + words[i] + ' ' + stats[i] + '</span>');
+
+        // For sentence statistic display.
+        var scores = pre_response['sentenceScores'],
+            rank = $('#sentence-rank-cb').is(':checked'),
+            score = $('#sentence-score-cb').is(':checked'),
+            stats = [];
+        $('#summary-div').html(sentences.join(' '));
+        // Display based on the options selected.
+        if (rank && score) {
+            // Sort the sentences.
+            var sorted = [];
+            for (var i in sentences)
+                sorted.push([i, scores[i]]);
+            sorted.sort(function(a, b){ return b[1] - a[1]; });
+            stats = new Array(sorted.length);
+            var rank = 1;
+            for (var i in sorted) {
+                stats[sorted[i][0]] = '(' + rank + ', ' + format(sorted[i][1]) + ')';
+                rank += 1;
+            }
+        } else if (rank) {
+            var sorted = [];
+            for (var i in sentences)
+                sorted.push([i, scores[i]]);
+            sorted.sort(function(a, b){ return b[1] - a[1]; });
+            stats = new Array(sorted.length);
+            var rank = 1;
+            for (var i in sorted) {
+                stats[sorted[i][0]] = '(' + rank + ')';
+                rank += 1;
+            }
+        } else if (score) {
+            for (var i in sentences)
+                stats.push('(' + format(scores[i]) + ')');
+        }
+        var sb = '';
+        if (stats.length > 0)
+            for (var i in sentences)
+                sb += sentences[i].substring(0, sentences[i].length - 1) + ' <mark class="sentence-mark">' + stats[i] + '</mark>. ';
+        else
+            sb += sentences.join(' ')
+        sb = sb.trim();
+
+        $('#summary-div').html(sb);
+    } else {
+        $('#summary-div').html(sentences.join(' '));
+    }
+};
 
 /**
  * Compute summary.
@@ -163,10 +258,11 @@ var compute = function(){
     if (unit === 'sentences' || unit === 'words')
         unit = unit.substring(0, unit.length - 1);
     var request = {
-            'texts'    : [$('#input-ta').val()],
+            'text'     : $('#input-ta').val(),
             'size'     : parseInt($('#sum-num-in').val()),
             'stopwords': Object.keys(stopwords),
-            'unit'     : unit
+            'unit'     : unit,
+            'detail'   : true
     };
     var md5 = MD5(JSON.stringify(request));
     if (md5 !== pre_md5) {
@@ -182,16 +278,40 @@ var compute = function(){
             url: 'http://jiemei.cs.dal.ca:8080/gtm-api/services/sum',
             data: JSON.stringify(request),
             success: function(response) {
-                var sentences = response['summaries'][0];
-                console.log(sentences);
-                $('#summary-div').html(sentences.join(' '));
+                console.log(response);
+                var sentences = response['sentences'];
                 $('#summarize-btn').html('Summarize');
                 highlight($('#input-ta'), sentences);
+                $('#summary-div').html(sentences.join(' '));
+                pre_response = response;
+                updateDisplay();
             }
         });
     }
     pre_md5 = md5;
 };
+
+/**
+ * Interval check and update.
+ */
+var prevLen = 0;
+var prevInput = '';
+setInterval(function(){
+    // Update the slider while length value still get focus.
+    resetslider();
+    // Update the summary while changing the slider.
+    var len = $('#sum-slider').slider('getValue');
+    if (prevLen === len && ready)
+        compute();
+    prevLen = len;
+    // Once input changes, clean the current summary and aviod the auto-update.
+    var input = $('#input-ta').val().trim();
+    if (input !== prevInput) {
+        $('summary-div').html('');
+        ready = false;
+    }
+    prevInput = input;
+}, 300);
 
 $(function(){
 
@@ -200,9 +320,11 @@ $(function(){
     /**
      * Initialize the application.
      */
-    // Initialize silder.
+    // Initialize slider.
     $('#sum-slider').slider({ tooltip: 'hide' });
     $('#sum-num-in').val($('#sum-slider').slider('getValue'));
+    $('#statistic-slider').slider({ tooltip: 'hide' });
+    $('#statistic-slider-data').hide();
     // Initialize stopword Panel.
     var stopword_list = '';
     for (var stopword in stopwords)
@@ -211,13 +333,6 @@ $(function(){
     $('#stopword-ta').val(stopword_list);
     // Preload context.
     $('#input-ta').val(DEFAULT_CONTENT);
-
-    /**
-     * Interval check and update.
-     */
-    setInterval(function(){
-        resetSilder();
-    }, 200);
 
     /**
      * Setting buttons.
@@ -275,7 +390,7 @@ $(function(){
      * Download summary.
      */
     $('#download-btn').click(function(){
-        var output = $('#summary-div').html();
+        var output = pre_response['sentences'].join(' ');
         var blob = new Blob([output], {type: "text/plain;charset=utf-8"});
         saveAs(blob, "result.txt");
     });
@@ -286,7 +401,10 @@ $(function(){
     /**
      * Compute once summary is requested.
      */
-    $('#summarize-btn').click(compute);
+    $('#summarize-btn').click(function(){
+        compute();
+        ready = true;
+    });
 
     /**
      * Summary length options setting.
@@ -312,6 +430,10 @@ $(function(){
     }
     // Change the output type.
     $('.output-type').click(function(){
+        // Highlight the current selection.
+        $(this).parent().parent().find('.active').removeClass('active');
+        $(this).parent().addClass('active');
+        // Update the value and slider
         var label = $(this).html();
         var curr_type = (label === 'percentage'
                 ? label : label.substring(0, label.length - 1));
@@ -336,8 +458,28 @@ $(function(){
                     val = parseInt(val / words(input) * sentences(input)); break;
             }
             $('#sum-num-in').val((val === 0 ? 1 : val));
-            resetSilder();
+            resetslider();
         }
     });
 
+    /**
+     * Option panels.
+     */
+    $('.statistic-type').click(function(){
+        $('#statistic-opt-list').children('.active').removeClass('active');
+        var opt = $(this).html();
+        if (opt === 'hide statistic') {
+            $('#statistic-type-label').html('Display');
+            updateDisplay();
+        } else
+            $('#statistic-type-label').html(opt);
+        if (opt === 'top word')
+            $('#statistic-slider-data').fadeIn(200);
+        else
+            $('#statistic-slider-data').fadeOut(200);
+    });
+
+    $('#word-rank-cb, #word-score-cb, #sentence-rank-cb, #sentence-score-cb').click(function(){
+        updateDisplay();
+    });
 });
