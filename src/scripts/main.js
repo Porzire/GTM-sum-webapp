@@ -170,7 +170,6 @@ var updateDisplay = function() {
         return;
     var opt = $('#statistic-type-label').html(),
         sentences = [];
-    console.log('opt: ' + opt);
     // Copy the sentences for using by string.replace.
     for (var i in pre_response['sentences'])
         sentences.push(pre_response['sentences'][i].slice());
@@ -250,6 +249,8 @@ var updateDisplay = function() {
     }
 };
 
+var pre_originalOrder = [];
+
 /**
  * Compute summary.
  */
@@ -307,7 +308,8 @@ setInterval(function(){
     // Once input changes, clean the current summary and aviod the auto-update.
     var input = $('#input-ta').val().trim();
     if (input !== prevInput) {
-        $('summary-div').html('');
+        $('#summary-div').html('');
+        $('#summarize-btn').show();
         ready = false;
     }
     prevInput = input;
@@ -374,6 +376,46 @@ $(function(){
 
     //----------------------------- Result Panel -----------------------------\\
 
+    $('#original-order-a').click(function(){
+        if (pre_originalOrder.length !== 0) {
+            var orderedSentence = [],
+                orderedScores = [];
+            for (var i in pre_originalOrder) {
+                var index = pre_originalOrder[i];
+                orderedSentence.push(pre_response['sentences'][index]);
+                orderedScores.push(pre_response['sentenceScores'][index]);
+            }
+            pre_originalOrder = [];
+            // Update the pre_response.
+            pre_response['sentences'] = orderedSentence;
+            pre_response['sentenceScores'] = orderedScores;
+            // Update the summary.
+            updateDisplay();
+        }
+    });
+
+    $('#ranked-order-a').click(function(){
+        if (pre_originalOrder.length === 0) {
+            var sorted = [];
+            for (var i in pre_response['sentences'])
+                sorted.push([i, pre_response['sentenceScores'][i]]);
+            sorted.sort(function(a, b){ return b[1] - a[1]; });
+            var orderedSentence = [],
+                orderedScores = [];
+            for (var i in sorted) {
+                var index = sorted[i][0];
+                orderedSentence.push(pre_response['sentences'][index]);
+                orderedScores.push(sorted[i][1]);
+                pre_originalOrder.push(index);
+            }
+            // Update the pre_response.
+            pre_response['sentences'] = orderedSentence;
+            pre_response['sentenceScores'] = orderedScores;
+            // Update the summary.
+            updateDisplay();
+        }
+    });
+
     /**
      * Result panel tablist.
      */
@@ -404,6 +446,7 @@ $(function(){
     $('#summarize-btn').click(function(){
         compute();
         ready = true;
+        $(this).hide();
     });
 
     /**
